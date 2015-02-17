@@ -407,8 +407,6 @@ function do_bbcode_code ($action, $attributes, $content, $params, $node_object) 
 	if ($a) {
 		$a = ' class="language-'. $a .'"';
 	}
-	print_r($attributes);
-	//return '<pre'. $a .'>'. $temp_str .'</pre>';
 	return '<pre><code'. $a .'>'. $temp_str .'</code></pre>';
 }
 
