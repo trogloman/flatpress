@@ -399,6 +399,42 @@ function do_bbcode_code ($action, $attributes, $content, $params, $node_object) 
 		$temp_str = wp_specialchars($temp_str);
 	}
 	$a = '';
+	//language-css
+	if (isset($attributes['language'])) {
+			$a = $attributes['language'];
+			
+	}
+	if ($a) {
+		$a = ' class="language-'. $a .'"';
+	}
+	print_r($attributes);
+	//return '<pre'. $a .'>'. $temp_str .'</pre>';
+	return '<pre><code'. $a .'>'. $temp_str .'</code></pre>';
+}
+
+
+/**
+ * Function to return code
+ *
+ * @param string $action
+ * @param array $attributes
+ * @param string $content
+ * @param mixed $params Not used
+ * @param mixed $node_object Not used
+ * @return string
+ */
+function do_bbcode_pre ($action, $attributes, $content, $params, $node_object) {
+	if ($action == 'validate') {
+		return true;
+	}
+	$temp_str = $content;
+	$temp_str = str_replace('<br />', chr(10), $temp_str);
+	$temp_str = str_replace(chr(10). chr(10), chr(10), $temp_str);
+	$temp_str = str_replace(chr(32), '&nbsp;', $temp_str);
+	if (BBCODE_ALLOW_HTML) {
+		$temp_str = wp_specialchars($temp_str);
+	}
+	$a = '';
 	if (function_exists('plugin_syntaxhighlighter_foot')) {
 		if (isset($attributes['default'])) {
 			$a = $attributes['default'];
@@ -409,8 +445,10 @@ function do_bbcode_code ($action, $attributes, $content, $params, $node_object) 
 	if ($a) {
 		$a = ' class="'. $a .'"';
 	}
+	print_r($attributes);
 	return '<pre'. $a .'>'. $temp_str .'</pre>';
 }
+
 
 /**
  * Function to return html
@@ -602,6 +640,18 @@ function &plugin_bbcode_init() {
 			'code', 
 			'usecontent', 
 			'do_bbcode_code', 
+			array(),
+			'inline', 
+			array(
+				'listitem', 'block', 'inline', 'link'
+			),
+			array()
+		);
+		$bbcode->setCodeFlag('pre', 'closetag', BBCODE_CLOSETAG_MUSTEXIST);
+		$bbcode->addCode(
+			'pre', 
+			'usecontent', 
+			'do_bbcode_pre', 
 			array(),
 			'inline', 
 			array(
